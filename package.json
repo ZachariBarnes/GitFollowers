@@ -1,0 +1,39 @@
+{
+  "name": "gitfollowers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "bable src --out-dir dist",
+    "start": "npm run build && node dist/index.js",
+    "test": "jest --collect-coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZachariBarnes/GitFollowers.git"
+  },
+  "author": "Zachari Barnes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZachariBarnes/GitFollowers/issues"
+  },
+  "homepage": "https://github.com/ZachariBarnes/GitFollowers#readme",
+  "dependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "axios": "^0.19.0",
+    "babel-jest": "^24.5.0",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.3",
+    "eslint": "^6.0.1",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "jest": "^24.5.0"
+  }
+}
