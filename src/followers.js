@@ -102,28 +102,28 @@ const getUsers = (async (url, id) => {
     })
     .then(async (response2) => {
       // console.log(`Response 2: ${JSON.stringify(response2)}`);
-
-      const follower0 = response2.followers[0];
-      const follower1 = response2.followers[1];
-      const follower2 = response2.followers[2];
-      const follower3 = response2.followers[3];
-      const follower4 = response2.followers[4];
+      const follower = response2.followers;
+      const Subfollowers = [];
       const { searchedId } = response2;
-      const Subfollowers0 = (follower0)
-        ? await getUser(follower0.followerUrl, follower0.githubId) : undefined;
-      const Subfollowers1 = (follower1)
-        ? await getUser(follower1.followerUrl, follower1.githubId) : undefined;
-      const Subfollowers2 = (follower2)
-        ? await getUser(follower2.followerUrl, follower2.githubId) : undefined;
-      const Subfollowers3 = (follower3)
-        ? await getUser(follower3.followerUrl, follower3.githubId) : undefined;
-      const Subfollowers4 = (follower4)
-        ? await getUser(follower4.followerUrl, follower4.githubId) : undefined;
-      return {
+      Subfollowers[0] = (follower[0])
+        ? await getUser(follower[0].followerUrl, follower[0].githubId) : undefined;
+      Subfollowers[1] = (follower[1])
+        ? await getUser(follower[1].followerUrl, follower[1].githubId) : undefined;
+      Subfollowers[2] = (follower[2])
+        ? await getUser(follower[2].followerUrl, follower[2].githubId) : undefined;
+      Subfollowers[3] = (follower[3])
+        ? await getUser(follower[3].followerUrl, follower[3].githubId) : undefined;
+      Subfollowers[4] = (follower[4])
+        ? await getUser(follower[4].followerUrl, follower[4].githubId) : undefined;
+      const body = {
         searchedId,
         followers:
-          [Subfollowers0, Subfollowers1, Subfollowers2, Subfollowers3, Subfollowers4],
+          [],
       };
+      for (let i = 0; i < response2.followers.length; i += 1) {
+        body.followers.push(Subfollowers[i]);
+      }
+      return body;
     })
     .catch((error) => {
       console.log(error.error, error.config);
@@ -163,11 +163,36 @@ export const getFollowersRecursive = (async (githubId = '') => {
           ? await getUsers(follower3.followerUrl, follower3.githubId) : undefined;
         const Subfollowers4 = (follower4)
           ? await getUsers(follower4.followerUrl, follower4.githubId) : undefined;
-        return {
+        const body = {
           searchedId,
           followers:
-           [Subfollowers0, Subfollowers1, Subfollowers2, Subfollowers3, Subfollowers4],
+            [],
         };
+        switch (response2.followers.length) {
+          case 5:
+            body.followers = [
+              Subfollowers0,
+              Subfollowers1,
+              Subfollowers2,
+              Subfollowers3,
+              Subfollowers4];
+            break;
+          case 4:
+            body.followers = [Subfollowers0, Subfollowers1, Subfollowers2, Subfollowers3];
+            break;
+          case 3:
+            body.followers = [Subfollowers0, Subfollowers1, Subfollowers2];
+            break;
+          case 2:
+            body.followers = [Subfollowers0, Subfollowers1];
+            break;
+          case 1:
+            body.followers = [Subfollowers0];
+            break;
+          default:
+            break;
+        }
+        return body;
       })
       .catch((error) => {
         if (error.response.status === 403) {
