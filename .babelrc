@@ -1,4 +1,4 @@
 {
   "ignore": ["/node_modules","node_modules","./node_modules","./babel.config.js","./package.json","./npm-debug.log",],
-  "presets": ["@babel/env"]
+  "presets": ["@babel/preset-env"]
 }

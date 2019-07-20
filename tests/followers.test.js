@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { mockData } from './mockData';
 
-jest.mock('axios');
 const { getFollowers, getFollowersRecursive } = require('../src/followers');
+
+jest.mock('axios');
 
 let expectedResponse = '';
 const mockedResponse = { data: mockData.data };
+axios.get.mockResolvedValue(mockedResponse);
+
 describe('Testing getFollowers', () => {
   beforeEach(() => {
     expectedResponse = {
@@ -37,10 +40,10 @@ describe('Testing getFollowers', () => {
   it('Given a valid GithubID, getFollowersRecursive successfully returns Followers up to 3 levels deep', async () => {
     const input = 'laurenmarieh';
     expectedResponse.searchedId = input;
-    axios.get.mockResolvedValueOnce(mockedResponse);
     const result = await getFollowersRecursive(input);
-    console.log(result);
+    console.log(JSON.stringify(result));
     expect(result).toBeTruthy();
+    expect(result.followers[0].followers[0].followers.length).toBeGreaterThan(0);
   });
 
   // UnhappyPaths

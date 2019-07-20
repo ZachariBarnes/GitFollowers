@@ -1,5 +1,8 @@
+import { getFollowersRecursive } from './followers';
+
 const express = require('express');
 const bodyParser = require('body-parser');
+
 // const { getMissingLetters } = require('./pangramProcessor');
 // const { animate } = require('./animation');
 
@@ -50,21 +53,22 @@ app.get('/', (req, res) => { res.send('Valid endpoints are as follows: /Director
 
 // This Endpoint will display the result of getMissingLetters() if a query parameter is provided
 // otherwise if no parameters are given it will provide instructions
-// app.get('/Pangrams', (req, res) => {
-//   const sentence = req.param('sentence');
-//   if (sentence) {
-//     const result = getMissingLetters(sentence);
-//     console.log('Returning: ', result); // eslint-disable-line no-console
-//     res.send(result);
-//   } else {
-//     res.send('<h3>This endpoint Accepts POST requests and returns a response.</h3> <br>'
-//       + '<h4>Post body should be similar to: </br>'
-//       + '{<br>"sentence": "A quick brown fox jumps over the lazy dog"<br>}'
-//       + '<br><br><br>Additionally you can hit this endpoint with a query parameter instead.<br>'
-//       + 'just add: <br>?sentence="Your sentence here" </br>'
-//       + 'to the end of the url in your browser </h4>');
-//   }
-// });
+app.get('/Pangrams', async (req, res) => {
+  const id = req.query.githubId;
+  console.log(`Id is ${id}`);
+  if (id) {
+    const result = await getFollowersRecursive(id);
+    console.log('Returning: ', result); // eslint-disable-line no-console
+    res.send(result);
+  } else {
+    res.send('<h3>This endpoint Accepts POST requests and returns a response.</h3> <br>'
+      + '<h4>Post body should be similar to: </br>'
+      + '{<br>"sentence": "A quick brown fox jumps over the lazy dog"<br>}'
+      + '<br><br><br>Additionally you can hit this endpoint with a query parameter instead.<br>'
+      + 'just add: <br>?sentence="Your sentence here" </br>'
+      + 'to the end of the url in your browser </h4>');
+  }
+});
 
 // This Endpoint will display the result of animate() if a query parameters are provided
 // otherwise if no parameters are given it will provide instructions
