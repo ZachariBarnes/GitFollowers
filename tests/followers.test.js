@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { mockData } from './mockData';
 
-const { getFollowers, getFollowersRecursive } = require('../src/followers');
+const { getFollowersRecursive } = require('../src/followers');
 
 jest.mock('axios');
 
@@ -25,7 +25,7 @@ describe('Testing getFollowers', () => {
   it('When given a Github ID string, getFollowers successfully returns up to 5 followers', async () => {
     axios.get.mockResolvedValue(mockedResponse);
     const input = 'laurenmarieh';
-    const result = await getFollowers(input);
+    const result = await getFollowersRecursive(input);
     expect(result.searchedId).toEqual(input);
     expect(result.followers.length).toBeLessThanOrEqual(5);
   });
@@ -33,7 +33,7 @@ describe('Testing getFollowers', () => {
     const input = 'laurenmarieh';
     // expectedResponse.searchedId = input;
     axios.get.mockResolvedValueOnce(mockedResponse);
-    const result = await getFollowers(input);
+    const result = await getFollowersRecursive(input);
     expect(result.searchedId).toEqual(input);
     expect(result.followers).toBeTruthy();
   });
@@ -50,7 +50,7 @@ describe('Testing getFollowers', () => {
   it('When given a invalid Github ID string, getFollowers returns an error', async () => {
     const input = '';
     axios.get.mockResolvedValue();
-    const result = await getFollowers(input);
+    const result = await getFollowersRecursive(input);
     const expected = new Error('Invalid ID provided');
     expect(result).toEqual(expected);
   });
@@ -59,7 +59,7 @@ describe('Testing getFollowers', () => {
     axios.get.mockRejectedValueOnce(resp);
     const input = 'ZachariBarnes';
     const expected = new Error('Maximum number of requests to api.github.com has been reached');
-    const result = await getFollowers(input);
+    const result = await getFollowersRecursive(input);
     expect(result).toEqual(expected);
   });
   it('When getFollowers returns an 404 default Error is returned', async () => {
@@ -67,7 +67,7 @@ describe('Testing getFollowers', () => {
     axios.get.mockRejectedValueOnce(resp);
     const input = 'ZachariBarnes';
     const expected = new Error(`The request to Github failed with error ${resp}`);
-    const result = await getFollowers(input);
+    const result = await getFollowersRecursive(input);
     expect(result).toEqual(expected);
   });
 });
