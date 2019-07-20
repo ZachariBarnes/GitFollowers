@@ -109,11 +109,16 @@ const getUsers = (async (url, id) => {
       const follower3 = response2.followers[3];
       const follower4 = response2.followers[4];
       const { searchedId } = response2;
-      const Subfollowers0 = await getUser(follower0.followerUrl, follower0.githubId);
-      const Subfollowers1 = await getUser(follower1.followerUrl, follower1.githubId);
-      const Subfollowers2 = await getUser(follower2.followerUrl, follower2.githubId);
-      const Subfollowers3 = await getUser(follower3.followerUrl, follower3.githubId);
-      const Subfollowers4 = await getUser(follower4.followerUrl, follower4.githubId);
+      const Subfollowers0 = (follower0)
+        ? await getUser(follower0.followerUrl, follower0.githubId) : undefined;
+      const Subfollowers1 = (follower1)
+        ? await getUser(follower1.followerUrl, follower1.githubId) : undefined;
+      const Subfollowers2 = (follower2)
+        ? await getUser(follower2.followerUrl, follower2.githubId) : undefined;
+      const Subfollowers3 = (follower3)
+        ? await getUser(follower3.followerUrl, follower3.githubId) : undefined;
+      const Subfollowers4 = (follower4)
+        ? await getUser(follower4.followerUrl, follower4.githubId) : undefined;
       return {
         searchedId,
         followers:
@@ -148,11 +153,16 @@ export const getFollowersRecursive = (async (githubId = '') => {
         const follower3 = response2.followers[3];
         const follower4 = response2.followers[4];
         const { searchedId } = response2;
-        const Subfollowers0 = await getUsers(follower0.followerUrl, follower0.githubId);
-        const Subfollowers1 = await getUsers(follower1.followerUrl, follower1.githubId);
-        const Subfollowers2 = await getUsers(follower2.followerUrl, follower2.githubId);
-        const Subfollowers3 = await getUsers(follower3.followerUrl, follower3.githubId);
-        const Subfollowers4 = await getUsers(follower4.followerUrl, follower4.githubId);
+        const Subfollowers0 = (follower0)
+          ? await getUsers(follower0.followerUrl, follower0.githubId) : undefined;
+        const Subfollowers1 = (follower1)
+          ? await getUsers(follower1.followerUrl, follower1.githubId) : undefined;
+        const Subfollowers2 = (follower2)
+          ? await getUsers(follower2.followerUrl, follower2.githubId) : undefined;
+        const Subfollowers3 = (follower3)
+          ? await getUsers(follower3.followerUrl, follower3.githubId) : undefined;
+        const Subfollowers4 = (follower4)
+          ? await getUsers(follower4.followerUrl, follower4.githubId) : undefined;
         return {
           searchedId,
           followers:
