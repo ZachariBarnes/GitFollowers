@@ -1,0 +1,10 @@
+{
+  "lambda": {
+    "role": "gitfollowers-executor",
+    "name": "gitfollowers",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "x7t7y7ixzh"
+  }
+}
