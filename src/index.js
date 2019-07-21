@@ -1,7 +1,6 @@
-import { getFollowersRecursive } from './followers';
-
 const express = require('express');
 const bodyParser = require('body-parser');
+const getFollowers = require('./followers');
 
 /* This file sets up a local Express Server
 This acts as an API with multiple endpoints. Endpoints are as follows:
@@ -36,12 +35,13 @@ app.use(express.urlencoded()); // to support URL-encoded bodies
 app.get('/Directory', (req, res) => { res.send('Valid endpoints are as follows: /Directory, /, /getFollowers'); });
 app.get('/', (req, res) => { res.send('Valid endpoints are as follows: /Directory, /, /getFollowers'); });
 
-// This Endpoint will display the result of getMissingLetters() if a query parameter is provided
+// This Endpoint will display the result of getFollowers(githubID)
+// A githubId query parameter  must be provided
 // otherwise if no parameters are given it will provide instructions
 app.get('/getFollowers', async (req, res) => {
   const id = req.query.githubId;
   if (id) {
-    const result = await getFollowersRecursive(id);
+    const result = await getFollowers(id);
     console.log('Returning: ', result); // eslint-disable-line no-console
     res.send(result);
   } else {
@@ -55,11 +55,12 @@ app.get('/getFollowers', async (req, res) => {
   }
 });
 
-// Given a sentence parameter This Post endpoint will return the response of getMissingLetters()
+// Given a sentence parameter This Post endpoint will return the response of getFollowers(githubID)
+// A githubId must be provided
 app.post('/getFollowers', async (req, res) => {
   const { githubId: id } = req.body;
   if (id) {
-    const result = await getFollowersRecursive(id);
+    const result = await getFollowers(id);
     console.log('Returning: ', result); // eslint-disable-line no-console
     res.send(result);
   } else {
@@ -76,3 +77,5 @@ app.post('/getFollowers', async (req, res) => {
 // app.listen allows the express app to listen to REST requests on a given port
 // eslint-disable-next-line no-console
 app.listen(3003, () => { console.log('API Endpoints live at: http://localhost:3003/'); });
+// module.exports = app;
+// The above line is used instead of app.listen when deploying to AWS lambda

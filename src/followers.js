@@ -4,6 +4,8 @@ const axios = require('axios');
 require('babel-polyfill');
 const env = require('../env');
 
+// This pulls in the clientID  and client Secret from the env.js file
+// this allows the API to call the github API up tp 5,000 times per hour instead of 60
 const config = {
   headers: {
     Accept: 'application/vnd.github.v3+json',
@@ -13,39 +15,7 @@ const config = {
 const githubUsersApi = 'https://api.github.com/users/';
 const authQueryParam = env.credentials;
 
-
-// // This function accepts a string and determines what letters are missing
-// export const getFollowers = (async (githubId = '') => {
-//   if (githubId.length > 0) {
-//     const input = githubId.toLowerCase();
-//     const targetUrl = `${githubUsersApi + input}/followers?${authQueryParam}`;
-//     const result = await axios.get(targetUrl, config)
-//       .then((response) => {
-//         // console.log(response.data);
-//         const data = response.data.slice(0, 5);
-//         const responseBody = {
-//           searchedId: input,
-//           followers: [],
-//         };
-//         data.forEach((follower) => {
-//           const newFollower = { githubId: follower.login };
-//           responseBody.followers.push(newFollower);
-//         });
-//         return responseBody;
-//       })
-//       .catch((error) => {
-//         if (error.response.status === 403) {
-//           return new Error('Maximum number of requests to api.github.com has been reached');
-//         }
-//         // eslint-disable-next-line no-console
-//         console.log(error);
-//         return new Error(`The request to Github failed with error ${error}`);
-//       });
-//     return result;
-//   }
-//   return new Error('Invalid ID provided');
-// });
-
+// This function takes data from the github API and trims off the fields we do not want
 const constructUserObject = ((response, input) => {
   const data = response.data.slice(0, 5);
   const responseBody = {
@@ -63,6 +33,7 @@ const constructUserObject = ((response, input) => {
   return responseBody;
 });
 
+// This function creates the shape of the data we display to the user
 const constructUserbody = ((response, input) => {
   const data = response.data.slice(0, 5);
   const responseBody = {
@@ -78,7 +49,8 @@ const constructUserbody = ((response, input) => {
   return responseBody;
 });
 
-
+// This function gets a single user and their followers from the API
+// It is called multiple times to generate the follower tree
 const getUser = (async (url, id) => axios.get(url + authQueryParam, config)
 // eslint-disable-next-line arrow-body-style
   .then((response) => {
@@ -90,6 +62,7 @@ const getUser = (async (url, id) => axios.get(url + authQueryParam, config)
     console.log(error.error, error.config);
   }));
 
+// This function calls getUser for each follower of a given githubId
 const getUsers = (async (url, id) => {
   const results = await axios.get(url + authQueryParam, config)
     .then((response) => {
@@ -129,8 +102,9 @@ const getUsers = (async (url, id) => {
   return results;
 });
 
-
-export const getFollowersRecursive = (async (githubId = '') => {
+// This function Gets the data for the given github ID
+// It also returns all of his/her followers up to 3 levels deep if they exist
+const getFollowersRecursive = (async (githubId = '') => {
   if (githubId.length > 0) {
     const input = githubId.toLowerCase();
     const targetUrl = `${githubUsersApi + input}/followers${authQueryParam}`;
@@ -179,26 +153,4 @@ export const getFollowersRecursive = (async (githubId = '') => {
   // return (depth > 0) ? getFollowers(githubId, depth - 1) : null;
 });
 
-export default getFollowersRecursive();
-
-
-// .then((response) => {
-//   console.log(`first Res${response}`);
-//   const responseBody = constructUserObject(response, input);
-//   responseBody.followers.forEach(async (follower) => {
-//     const nextTargetUrl = `${githubUsersApi + follower.githubId}/followers?${authQueryParam}`;
-//     const tier2 = await axios.get(nextTargetUrl, config)
-//       .then(response2 => constructUserObject(response2, follower.githubId));
-//     tier2.followers.forEach(async (finalFollower) => {
-//       const finalTargetUrl = `${githubUsersApi + finalFollower.githubId}/followers?${authQueryParam}`;
-//       const tier3 = await axios.get(finalTargetUrl, config)
-//         .then(response3 => constructUserObject(response3, finalFollower.githubId));
-//       const t3index = tier2.followers.indexOf(finalFollower);
-//       tier2.followers[t3index] = tier3;
-//     });
-//     const t2index = responseBody.followers.indexOf(follower);
-//     responseBody.followers[t2index] = tier2;
-//   });
-//   console.log(`Response: ${responseBody}`);
-//   return responseBody;
-// })
+module.exports = getFollowersRecursive;
